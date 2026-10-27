@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Bike on BikeMarket</title>
+  <meta name="description" content="A second-hand bike for sale on BikeMarket.">
+  <style>
+    :root { --bg:#F7F7F7; --card:#FFFFFF; --text:#111827; --muted:#6B7280; --border:#E5E7EB; --primary:#111827; --on-primary:#FFFFFF; }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg:#0B0F17; --card:#161B26; --text:#F3F4F6; --muted:#9CA3AF; --border:#2E3646; --primary:#F3F4F6; --on-primary:#111827; }
+    }
+    * { box-sizing: border-box; }
+    body { margin:0; background:var(--bg); color:var(--text); font:16px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif; }
+    main { max-width:480px; margin:0 auto; padding:24px 16px 48px; }
+    .brand { font-weight:800; font-size:20px; margin-bottom:16px; }
+    .card { background:var(--card); border:1px solid var(--border); border-radius:16px; overflow:hidden; }
+    .photo { width:100%; aspect-ratio:4/3; object-fit:cover; background:var(--border); display:block; }
+    .info { padding:16px; }
+    .price { font-size:26px; font-weight:800; }
+    .name { font-size:18px; font-weight:700; margin-top:2px; }
+    .meta { color:var(--muted); margin-top:4px; }
+    .btn { display:block; text-align:center; background:var(--primary); color:var(--on-primary); text-decoration:none; font-weight:700; padding:15px; border-radius:12px; margin-top:16px; }
+    .btn.secondary { background:transparent; color:var(--text); border:1px solid var(--border); }
+    .note { color:var(--muted); font-size:13px; text-align:center; margin-top:16px; }
+  </style>
+</head>
+<body>
+<main>
+  <div class="brand">🏍️ BikeMarket</div>
+  <div class="card" id="card">
+    <img class="photo" id="photo" alt="" hidden>
+    <div class="info">
+      <div class="price" id="price">Loading…</div>
+      <div class="name" id="name"></div>
+      <div class="meta" id="meta"></div>
+    </div>
+  </div>
+  <a class="btn" id="open" href="#">Open in the BikeMarket app</a>
+  <a class="btn secondary" id="store" href="https://play.google.com/store/apps/details?id=com.x9491288162.bikemarketplace">Get BikeMarket on Google Play</a>
+  <p class="note">Buy and sell second-hand bikes near you. Chat with the seller in the app.</p>
+</main>
+<script>
+  (function () {
+    var SUPABASE_URL = 'https://ffkumfiyjbnxivujtonj.supabase.co';
+    var KEY = 'sb_publishable_6JFuwguWp6kao48JC0uo3w_JHwhGc4y';
+    var PACKAGE = 'com.x9491288162.bikemarketplace';
+    var STORE = 'https://play.google.com/store/apps/details?id=' + PACKAGE;
+    var id = new URLSearchParams(location.search).get('id') || '';
+    if (!/^[0-9a-f-]{36}$/i.test(id)) {
+      document.getElementById('price').textContent = 'Listing not found';
+      return;
+    }
+
+    // Android opens the app if installed, otherwise the Play Store
+    var appLink = 'intent://bike/' + id + '#Intent;scheme=bikemarketplace;package=' + PACKAGE +
+      ';S.browser_fallback_url=' + encodeURIComponent(STORE) + ';end';
+    var open = document.getElementById('open');
+    open.href = /android/i.test(navigator.userAgent) ? appLink : 'bikemarketplace://bike/' + id;
+
+    fetch(SUPABASE_URL + '/rest/v1/bikes?select=bike_name,brand,price,location,images,status&id=eq.' + id, {
+      headers: { apikey: KEY, Authorization: 'Bearer ' + KEY }
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (rows) {
+        var b = rows && rows[0];
+        if (!b) { document.getElementById('price').textContent = 'Listing not found'; return; }
+        document.title = b.bike_name + ' on BikeMarket';
+        document.getElementById('price').textContent = '₹' + Number(b.price).toLocaleString('en-IN');
+        document.getElementById('name').textContent = b.brand && b.bike_name.toLowerCase().indexOf(b.brand.toLowerCase()) !== 0 ? b.brand + ' ' + b.bike_name : b.bike_name;
+        document.getElementById('meta').textContent = (b.location ? '📍 ' + b.location : '') + (b.status === 'sold' ? ' · Sold' : '');
+        if (b.images && b.images[0]) { var img = document.getElementById('photo'); img.src = b.images[0]; img.alt = b.bike_name; img.hidden = false; }
+      })
+      .catch(function () { document.getElementById('price').textContent = 'Open the app to see this bike'; });
+  })();
+</script>
+</body>
+</html>
