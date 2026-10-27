@@ -84,7 +84,7 @@
       <tr><th>Bike listings</th><td>Bike details (name, brand, model, year, fuel, kilometres, price, owners, service and accident history, description), up to 5 photos, the area where the bike is, the location coordinates captured when you post, and the contact number you enter.</td></tr>
       <tr><th>Messages</th><td>The chats you send and receive in the app (text and photos), which listing a chat is about, and whether messages have been read. Chat photos are private to the two people in the chat.</td></tr>
       <tr><th>Likes and views</th><td>The bikes you like, and which listings were viewed (once a day per account, or per random app-install id for visitors who are not signed in), so sellers can see how many people viewed their bike.</td></tr>
-      <tr><th>Bike number checks</th><td>Registration numbers you check with "Check bike details", and when. The result (with the owner name and chassis/engine numbers partly hidden) is kept for 7 days so repeat checks are instant.</td></tr>
+      <tr><th>Bike number checks</th><td>Registration numbers you check with "Check bike details" or "Check challans", and when. Results (with the owner name and chassis/engine numbers partly hidden, and no names from challans) are kept for 7 days (challans: 1 day) so repeat checks are instant.</td></tr>
       <tr><th>Saved searches</th><td>Searches and filters you save for alerts and, if you set a distance, the location you saved them from.</td></tr>
       <tr><th>Mechanic profiles</th><td>If you register a garage: shop name, your name, phone number, whether you use WhatsApp, address, location coordinates, services, vehicle types, working hours, experience, prices, description and shop photos.</td></tr>
       <tr><th>Reviews and reports</th><td>Ratings and reviews you give mechanics; which mechanics you contacted through the app (so only real customers can review); reports you make about listings, mechanics or users; and people you block.</td></tr>
@@ -126,7 +126,7 @@
     <ul>
       <li><strong>Supabase</strong> — database, sign-in (one-time codes), file storage for photos, and real-time chat.</li>
       <li><strong>Expo (650 Industries)</strong> — app updates infrastructure and the push notification service.</li>
-      <li><strong>A licensed vehicle-registration (RC) data provider</strong> — receives only the registration number you enter in "Check bike details", and returns the vehicle's public registration record from the government Vahan database.</li>
+      <li><strong>A licensed vehicle-registration (RC) data provider</strong> — receives only the registration number you enter in "Check bike details" or "Check challans", and returns the vehicle's registration record (Vahan) or traffic challans (e-Challan) from government systems.</li>
       <li><strong>Google Firebase Cloud Messaging</strong> — delivers push notifications to Android phones.</li>
       <li><strong>Your phone's map and geocoding services</strong> (Google on Android) — turn your location into an area name, and open directions when you tap "Open in Maps".</li>
     </ul>
